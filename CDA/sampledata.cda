@@ -4,8 +4,8 @@
         <Connection id="mariadb_connection" type="sql.jdbc">
             <Driver>org.mariadb.jdbc.Driver</Driver>
             <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
-            <User>your_username</User>
-            <Pass>your_password</Pass>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
         </Connection>
     </DataSources>
 
