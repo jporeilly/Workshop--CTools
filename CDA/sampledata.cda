@@ -1,27 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CDADescriptor>
-    <!-- Sample SQL DataSource -->
     <DataSources>
-        <Connection id="SampleData" type="mondrian.jndi">
-            <Jndi>SampleData</Jndi>
-            <Catalog>mondrian:/SteelWheels</Catalog>
-            <Cube>SteelWheelsSales</Cube>
+        <Connection id="mariadb_connection" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>your_username</User>
+            <Pass>your_password</Pass>
         </Connection>
+    </DataSources>
 
-    <DataAccess id="top50Customers" connection="SampleData" type="mdx" access="public">
-        <Name>top50Customers</Name>
-        <BandedMode>compact</BandedMode>
+    <DataAccess id="query2004" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sample Data 2004</Name>
         <Query>
-            WITH 
-                SET CUSTOMERS AS TopCount([Customers].Children, 50.0, [Measures].[Sales])
             SELECT 
-                NON EMPTY {[Measures].[Sales]} ON COLUMNS,
-                NON EMPTY CUSTOMERS ON ROWS 
-            FROM [SteelWheelsSales]
-            WHERE ${marketQueryParam}
+                o.ORDERNUMBER,
+                o.ORDERDATE,
+                o.STATUS,
+                o.CUSTOMERNUMBER,
+                p.PRODUCTCODE,
+                p.PRODUCTNAME,
+                od.QUANTITYORDERED,
+                od.PRICEEACH,
+                (od.QUANTITYORDERED * od.PRICEEACH) as TOTAL_AMOUNT
+            FROM 
+                ORDERS o
+                JOIN ORDERDETAILS od ON o.ORDERNUMBER = od.ORDERNUMBER
+                JOIN PRODUCTS p ON od.PRODUCTCODE = p.PRODUCTCODE
+            WHERE 
+                YEAR(o.ORDERDATE) = 2004
+            ORDER BY 
+                o.ORDERDATE
         </Query>
-        <Parameters>
-            <Parameter name="marketQueryParam" type="String" default="[Markets].[All Markets]"/>
-        </Parameters>
+        <Parameters></Parameters>
+        <Columns></Columns>
     </DataAccess>
 </CDADescriptor>
