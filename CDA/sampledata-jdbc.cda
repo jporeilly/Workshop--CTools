@@ -9,16 +9,21 @@
         </Connection>
     </DataSources>
 
-    <DataAccess id="query2004" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
-        <Name>Sample Data 2004</Name>
+    <DataAccess id="allYearsQuery" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Data All Years</Name>
         <Query>
             SELECT 
+                YEAR(o.ORDERDATE) as YEAR,
+                MONTH(o.ORDERDATE) as MONTH,
                 o.ORDERNUMBER,
                 o.ORDERDATE,
                 o.STATUS,
                 o.CUSTOMERNUMBER,
+                c.CUSTOMERNAME,
+                c.COUNTRY,
                 p.PRODUCTCODE,
                 p.PRODUCTNAME,
+                p.PRODUCTLINE,
                 od.QUANTITYORDERED,
                 od.PRICEEACH,
                 (od.QUANTITYORDERED * od.PRICEEACH) as TOTAL_AMOUNT
@@ -26,10 +31,9 @@
                 ORDERS o
                 JOIN ORDERDETAILS od ON o.ORDERNUMBER = od.ORDERNUMBER
                 JOIN PRODUCTS p ON od.PRODUCTCODE = p.PRODUCTCODE
-            WHERE 
-                YEAR(o.ORDERDATE) = 2004
+                JOIN CUSTOMERS c ON o.CUSTOMERNUMBER = c.CUSTOMERNUMBER
             ORDER BY 
-                o.ORDERDATE
+                o.ORDERDATE, o.ORDERNUMBER
         </Query>
         <Parameters></Parameters>
         <Columns></Columns>

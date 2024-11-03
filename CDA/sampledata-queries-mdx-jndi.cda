@@ -7,6 +7,7 @@
             <Cube>SteelWheelsSales</Cube>
         </Connection>
     </DataSources>
+
     <DataAccess id="territories" connection="SampleData" type="mdx" access="public">
         <Name>territories</Name>
         <BandedMode>compact</BandedMode>
@@ -19,7 +20,8 @@
             FROM [SteelWheelsSales]
         </Query>
         <Output indexes="1,0" mode="include"/>
-    </DataAccess>   
+    </DataAccess> 
+
     <DataAccess id="countries" connection="SampleData" type="mdx" access="public">
         <Name>countries</Name>
         <BandedMode>compact</BandedMode>
@@ -35,7 +37,8 @@
             <Parameter name="marketQueryParam" type="String" default="[Markets].[All Markets]"/>
         </Parameters>
         <Output indexes="1,0" mode="include"/>
-    </DataAccess>   
+    </DataAccess>  
+
     <DataAccess id="cities" connection="SampleData" type="mdx" access="public">
         <Name>cities</Name>
         <BandedMode>compact</BandedMode>
@@ -51,7 +54,8 @@
             <Parameter name="marketQueryParam" type="String" default="[Markets].[All Markets]"/>
         </Parameters>
         <Output indexes="1,0" mode="include"/>
-    </DataAccess>   
+    </DataAccess>  
+     
     <DataAccess id="top50Customers" connection="SampleData" type="mdx" access="public">
         <Name>top50Customers</Name>
         <BandedMode>compact</BandedMode>
