@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <DataSources>
+        <!-- MDX JDBC Connection -->
+        <Connection id="mdx_jdbc_connection" type="mondrian.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
+            <Catalog>mondrian:/SalesSchema</Catalog>
+        </Connection>
+    </DataSources>
+
+    <DataAccess id="mdx_query_complete" connection="mdx_jdbc_connection" type="mdx" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Data - Complete Analysis via JDBC</Name>
+        <Query>
+            WITH MEMBER [Measures].[Total_Amount] AS 
+                '[Measures].[Quantity]' * '[Measures].[Unit Price]'
+            SELECT 
+                NON EMPTY {
+                    [Measures].[Quantity],
+                    [Measures].[Unit Price],
+                    [Measures].[Total_Amount],
+                    [Measures].[Order Count]
+                } ON COLUMNS,
+                NON EMPTY CrossJoin(
+                    CrossJoin(
+                        CrossJoin(
+                            [Order].[Year].Members,
+                            [Order].[Month].Members
+                        ),
+                        [Customer].[Customer].Members
+                    ),
+                    CrossJoin(
+                        CrossJoin(
+                            [Product].[Product].Members,
+                            [Status].[Status].Members
+                        ),
+                        [Measures].[Total_Amount]
+                    )
+                ) ON ROWS
+            FROM [Sales]
+            ORDER BY [Measures].[Total_Amount] DESC
+        </Query>
+        <Parameters></Parameters>
+        <Columns></Columns>
+    </DataAccess>
+</CDADescriptor>
