@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <DataSources>
+        <Connection id="mariadb_connection" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>your_username</User>
+            <Pass>your_password</Pass>
+        </Connection>
+    </DataSources>
+
+    <DataAccess id="parameterizedQuery" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Parameterized Sales Data</Name>
+        <Parameters>
+            <Parameter name="startDate" type="String" default="2003-01-01" pattern="yyyy-MM-dd"/>
+            <Parameter name="endDate" type="String" default="2005-12-31" pattern="yyyy-MM-dd"/>
+            <Parameter name="productLine" type="String" default="[]"/>
+            <Parameter name="country" type="String" default="[]"/>
+            <Parameter name="status" type="String" default="[]"/>
+            <Parameter name="minAmount" type="Numeric" default="0"/>
+        </Parameters>
+        <Query>
+            SELECT 
+                YEAR(o.ORDERDATE) as YEAR,
+                MONTH(o.ORDERDATE) as MONTH,
+                o.ORDERNUMBER,
+                o.ORDERDATE,
+                o.STATUS,
+                o.CUSTOMERNUMBER,
+                c.CUSTOMERNAME,
+                c.COUNTRY,
+                p.PRODUCTCODE,
+                p.PRODUCTNAME,
+                p.PRODUCTLINE,
+                od.QUANTITYORDERED,
+                od.PRICEEACH,
+                (od.QUANTITYORDERED * od.PRICEEACH) as TOTAL_AMOUNT
+            FROM 
+                ORDERS o
+                JOIN ORDERDETAILS od ON o.ORDERNUMBER = od.ORDERNUMBER
+                JOIN PRODUCTS p ON od.PRODUCTCODE = p.PRODUCTCODE
+                JOIN CUSTOMERS c ON o.CUSTOMERNUMBER = c.CUSTOMERNUMBER
+            WHERE 
+                1=1
+                ${startDate == null ? "" : "AND o.ORDERDATE >= ${startDate}"}
+                ${endDate == null ? "" : "AND o.ORDERDATE <= ${endDate}"}
+                ${productLine == "[]" ? "" : "AND p.PRODUCTLINE IN (${productLine})"}
+                ${country == "[]" ? "" : "AND c.COUNTRY IN (${country})"}
+                ${status == "[]" ? "" : "AND o.STATUS IN (${status})"}
+                ${minAmount == null ? "" : "AND (od.QUANTITYORDERED * od.PRICEEACH) >= ${minAmount}"}
+            ORDER BY 
+                o.ORDERDATE, o.ORDERNUMBER
+        </Query>
+        <Columns>
+            <Column idx="0" name="YEAR"/>
+            <Column idx="1" name="MONTH"/>
+            <Column idx="2" name="ORDERNUMBER"/>
+            <Column idx="3" name="ORDERDATE"/>
+            <Column idx="4" name="STATUS"/>
+            <Column idx="5" name="CUSTOMERNUMBER"/>
+            <Column idx="6" name="CUSTOMERNAME"/>
+            <Column idx="7" name="COUNTRY"/>
+            <Column idx="8" name="PRODUCTCODE"/>
+            <Column idx="9" name="PRODUCTNAME"/>
+            <Column idx="10" name="PRODUCTLINE"/>
+            <Column idx="11" name="QUANTITYORDERED"/>
+            <Column idx="12" name="PRICEEACH"/>
+            <Column idx="13" name="TOTAL_AMOUNT"/>
+        </Columns>
+    </DataAccess>
+
+    <!-- Additional query for populating parameter dropdowns -->
+    <DataAccess id="getProductLines" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Product Lines List</Name>
+        <Query>
+            SELECT DISTINCT PRODUCTLINE FROM PRODUCTS ORDER BY PRODUCTLINE
+        </Query>
+    </DataAccess>
+
+    <DataAccess id="getCountries" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Countries List</Name>
+        <Query>
+            SELECT DISTINCT COUNTRY FROM CUSTOMERS ORDER BY COUNTRY
+        </Query>
+    </DataAccess>
+
+    <DataAccess id="getOrderStatus" connection="mariadb_connection" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Order Status List</Name>
+        <Query>
+            SELECT DISTINCT STATUS FROM ORDERS ORDER BY STATUS
+        </Query>
+    </DataAccess>
+</CDADescriptor>
