@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <DataSources>
+        <Connection id="salesTrendConn" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
+        </Connection>
+    </DataSources>
+
+    <DataAccess id="salesTrendQuery" connection="salesTrendConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Trend Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d') as order_date,
+    SUM(od.quantityordered * od.priceeach) as total_sales,
+    COUNT(DISTINCT o.ordernumber) as order_count
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+GROUP BY 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d')
+ORDER BY 
+    order_date ASC
+        </Query>
+    </DataAccess>
+</CDADescriptor>
