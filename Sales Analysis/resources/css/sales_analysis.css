@@ -1,0 +1,45 @@
+.filter-panel {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.date-filters, .product-filters, .additional-filters {
+    padding: 10px;
+}
+
+.charts-panel {
+    margin: 20px 0;
+}
+
+.table-panel {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Component Specific Styles */
+select.multiple {
+    height: 120px;
+    width: 100%;
+}
+
+.datepicker {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Chart Containers */
+#trendChart, #pieChart {
+    min-height: 400px;
+    background-color: white;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
