@@ -1,17 +1,9 @@
-// Resource File (styles.css) - Add in Resource Panel
-require.config({
-    paths: {
-        'dashboard-styles': '/public/SalesAnalysis/styles'
-    }
-});
-
-// Layout Panel Structure
 {
     layout: {
         // Row 1 - Header
         "header": {
             type: "LayoutRow",
-            parent: "UnIqEiD",  // Root container
+            parent: "UnIqEiD",
             properties: {
                 "height": "80",
                 "backgroundColor": "#FFFFFF",
@@ -23,8 +15,8 @@ require.config({
             type: "LayoutColumn",
             parent: "header",
             properties: {
-                "width": "8",
-                "cssClass": "col-md-8",
+                "width": "8",  // 8/12 of the width
+                "cssClass": "col-xs-12 col-sm-8",
                 "name": "Header Title"
             },
             components: {
@@ -36,8 +28,8 @@ require.config({
             type: "LayoutColumn",
             parent: "header",
             properties: {
-                "width": "4",
-                "cssClass": "col-md-4 text-right",
+                "width": "4",  // 4/12 of the width
+                "cssClass": "col-xs-12 col-sm-4 text-right",
                 "name": "Header Controls"
             },
             components: {
@@ -60,12 +52,13 @@ require.config({
                 "name": "Filters Row"
             }
         },
+        // Date Filters Column (Left Half)
         "date_filters": {
             type: "LayoutColumn",
             parent: "filters_row",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of the width
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Date Filters"
             }
         },
@@ -73,8 +66,8 @@ require.config({
             type: "LayoutColumn",
             parent: "date_filters",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of parent (which is 6/12 of total)
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Start Date"
             },
             components: {
@@ -91,8 +84,8 @@ require.config({
             type: "LayoutColumn",
             parent: "date_filters",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of parent
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "End Date"
             },
             components: {
@@ -105,12 +98,13 @@ require.config({
                 `
             }
         },
+        // Selector Filters Column (Right Half)
         "selector_filters": {
             type: "LayoutColumn",
             parent: "filters_row",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of the width
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Selector Filters"
             }
         },
@@ -118,8 +112,8 @@ require.config({
             type: "LayoutColumn",
             parent: "selector_filters",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of parent
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Product Filter"
             },
             components: {
@@ -136,8 +130,8 @@ require.config({
             type: "LayoutColumn",
             parent: "selector_filters",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of parent
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Territory Filter"
             },
             components: {
@@ -166,8 +160,8 @@ require.config({
             type: "LayoutColumn",
             parent: "charts_row",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of the width
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Sales Trend Chart"
             },
             components: {
@@ -186,8 +180,8 @@ require.config({
             type: "LayoutColumn",
             parent: "charts_row",
             properties: {
-                "width": "6",
-                "cssClass": "col-md-6",
+                "width": "6",  // 6/12 of the width
+                "cssClass": "col-xs-12 col-sm-6",
                 "name": "Product Distribution Chart"
             },
             components: {
@@ -218,8 +212,8 @@ require.config({
             type: "LayoutColumn",
             parent: "table_row",
             properties: {
-                "width": "12",
-                "cssClass": "col-md-12",
+                "width": "12",  // Full width
+                "cssClass": "col-xs-12",
                 "name": "Sales Table"
             },
             components: {
