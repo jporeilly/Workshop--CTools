@@ -1,232 +1,131 @@
-{
-    layout: {
-        // Row 1 - Header
-        "header": {
-            type: "LayoutRow",
-            parent: "UnIqEiD",
-            properties: {
-                "height": "80",
-                "backgroundColor": "#FFFFFF",
-                "cssClass": "dashboard-header",
-                "name": "Header Row"
-            }
-        },
-        "header_title": {
-            type: "LayoutColumn",
-            parent: "header",
-            properties: {
-                "width": "8",  // 8/12 of the width
-                "cssClass": "col-xs-12 col-sm-8",
-                "name": "Header Title"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: "<h1>Sales Analysis Dashboard</h1>"
-            }
-        },
-        "header_buttons": {
-            type: "LayoutColumn",
-            parent: "header",
-            properties: {
-                "width": "4",  // 4/12 of the width
-                "cssClass": "col-xs-12 col-sm-4 text-right",
-                "name": "Header Controls"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <button id="exportBtn" class="btn btn-primary">Export Data</button>
-                    <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
-                `
-            }
-        },
+/* Main Layout */
+.dashboardContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
 
-        // Row 2 - Filters
-        "filters_row": {
-            type: "LayoutRow",
-            parent: "UnIqEiD",
-            properties: {
-                "height": "120",
-                "backgroundColor": "#FFFFFF",
-                "cssClass": "filters-container",
-                "name": "Filters Row"
-            }
-        },
-        // Date Filters Column (Left Half)
-        "date_filters": {
-            type: "LayoutColumn",
-            parent: "filters_row",
-            properties: {
-                "width": "6",  // 6/12 of the width
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Date Filters"
-            }
-        },
-        "start_date": {
-            type: "LayoutColumn",
-            parent: "date_filters",
-            properties: {
-                "width": "6",  // 6/12 of parent (which is 6/12 of total)
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Start Date"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="filter-item">
-                        <label>Start Date</label>
-                        <div id="dateStartObj"></div>
-                    </div>
-                `
-            }
-        },
-        "end_date": {
-            type: "LayoutColumn",
-            parent: "date_filters",
-            properties: {
-                "width": "6",  // 6/12 of parent
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "End Date"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="filter-item">
-                        <label>End Date</label>
-                        <div id="dateEndObj"></div>
-                    </div>
-                `
-            }
-        },
-        // Selector Filters Column (Right Half)
-        "selector_filters": {
-            type: "LayoutColumn",
-            parent: "filters_row",
-            properties: {
-                "width": "6",  // 6/12 of the width
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Selector Filters"
-            }
-        },
-        "product_filter": {
-            type: "LayoutColumn",
-            parent: "selector_filters",
-            properties: {
-                "width": "6",  // 6/12 of parent
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Product Filter"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="filter-item">
-                        <label>Product</label>
-                        <div id="productSelectorObj"></div>
-                    </div>
-                `
-            }
-        },
-        "territory_filter": {
-            type: "LayoutColumn",
-            parent: "selector_filters",
-            properties: {
-                "width": "6",  // 6/12 of parent
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Territory Filter"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="filter-item">
-                        <label>Territory</label>
-                        <div id="territorySelectorObj"></div>
-                    </div>
-                `
-            }
-        },
+.dashboardContainer {
+    background: #f5f5f5;
+    padding: 15px;
+}
 
-        // Row 3 - Charts
-        "charts_row": {
-            type: "LayoutRow",
-            parent: "UnIqEiD",
-            properties: {
-                "height": "400",
-                "backgroundColor": "#FFFFFF",
-                "cssClass": "charts-container",
-                "name": "Charts Row"
-            }
-        },
-        "sales_trend_chart": {
-            type: "LayoutColumn",
-            parent: "charts_row",
-            properties: {
-                "width": "6",  // 6/12 of the width
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Sales Trend Chart"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h2>Sales Trend</h2>
-                        </div>
-                        <div id="salesTrendObj"></div>
-                    </div>
-                `
-            }
-        },
-        "product_dist_chart": {
-            type: "LayoutColumn",
-            parent: "charts_row",
-            properties: {
-                "width": "6",  // 6/12 of the width
-                "cssClass": "col-xs-12 col-sm-6",
-                "name": "Product Distribution Chart"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="chart-wrapper">
-                        <div class="chart-header">
-                            <h2>Product Distribution</h2>
-                        </div>
-                        <div id="productDistObj"></div>
-                    </div>
-                `
-            }
-        },
+/* Filter Section */
+.filterRow {
+    background: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
 
-        // Row 4 - Table
-        "table_row": {
-            type: "LayoutRow",
-            parent: "UnIqEiD",
-            properties: {
-                "height": "400",
-                "backgroundColor": "#FFFFFF",
-                "cssClass": "table-container",
-                "name": "Table Row"
-            }
-        },
-        "sales_table": {
-            type: "LayoutColumn",
-            parent: "table_row",
-            properties: {
-                "width": "12",  // Full width
-                "cssClass": "col-xs-12",
-                "name": "Sales Table"
-            },
-            components: {
-                type: "LayoutHtml",
-                html: `
-                    <div class="table-wrapper">
-                        <div class="table-header">
-                            <h2>Sales Details</h2>
-                        </div>
-                        <div id="salesTableObj"></div>
-                    </div>
-                `
-            }
-        }
+.filterLabel {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Selector Styling */
+select, input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    margin-top: 4px;
+}
+
+/* Charts Section */
+.chartsRow {
+    margin-bottom: 20px;
+}
+
+.chartContainer {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 100%;
+}
+
+.chartTitle {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Table Section */
+.tableContainer {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.tableTitle {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Table Styling */
+table.dataTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table.dataTable thead th {
+    background: #f5f5f5;
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+table.dataTable tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #eee;
+    color: #666;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Chart Specific Styles */
+.lineChart {
+    height: 300px;
+}
+
+.pieChart {
+    height: 300px;
+}
+
+/* Spacing */
+.spacer {
+    height: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .dashboardContent {
+        padding: 10px;
+    }
+    
+    .chartContainer {
+        margin-bottom: 20px;
     }
 }
