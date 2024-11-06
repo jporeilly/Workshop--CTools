@@ -1,45 +1,116 @@
-.filter-panel {
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+/* Dashboard Styles */
+.panel {
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.date-filters, .product-filters, .additional-filters {
-    padding: 10px;
-}
-
-.charts-panel {
-    margin: 20px 0;
-}
-
-.table-panel {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: white;
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: #f5f5f5;
+}
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.panel-body {
+    padding: 15px;
+}
+
+/* Row Specific Styles */
+.headerRow {
+    margin-bottom: 20px;
+}
+
+.headerRow .panel-title {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.filtersRow {
+    margin-bottom: 20px;
+}
+
+.filter-component {
+    width: 100%;
+    min-height: 34px;
+}
+
+.chart-component {
+    height: 350px;
+    width: 100%;
+}
+
+.table-component {
+    margin-top: 15px;
+    width: 100%;
 }
 
 /* Component Specific Styles */
-select.multiple {
-    height: 120px;
-    width: 100%;
+#dateStartObj, #dateEndObj {
+    width: 100% !important;
 }
 
-.datepicker {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ddd;
+#productSelectorObj, #territorySelectorObj {
+    width: 100% !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .col-xs-3, .col-xs-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .chart-component {
+        height: 300px;
+    }
+}
+
+/* Loading State */
+.loading {
+    position: relative;
+    opacity: 0.7;
+}
+
+.loading:after {
+    content: "Loading...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.8);
+    padding: 10px;
     border-radius: 4px;
 }
 
-/* Chart Containers */
-#trendChart, #pieChart {
-    min-height: 400px;
-    background-color: white;
+/* Table Styles */
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.table > thead > tr > th {
+    border-bottom: 2px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+/* Select2 Customization */
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single,
+.select2-container .select2-selection--multiple {
+    height: 34px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 15px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
