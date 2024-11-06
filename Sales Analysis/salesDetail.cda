@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <DataSources>
+        <Connection id="salesDetailConn" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
+        </Connection>
+    </DataSources>
+
+    <DataAccess id="salesDetailQuery" connection="salesDetailConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Detail Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d') as order_date,
+    o.ordernumber,
+    c.customername,
+    c.territory,
+    p.productline,
+    p.productname,
+    od.quantityordered as quantity,
+    od.priceeach as unit_price,
+    (od.quantityordered * od.priceeach) as total_amount,
+    o.status,
+    CASE 
+        WHEN o.status = 'Shipped' THEN 'Completed'
+        WHEN o.status = 'Cancelled' THEN 'Cancelled'
+        ELSE 'In Progress'
+    END as order_status
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+ORDER BY 
+    o.orderdate DESC,
+    o.ordernumber,
+    p.productline
+        </Query>
+    </DataAccess>
+
+    <!-- Query for Product dropdown -->
+    <DataAccess id="productListQuery" connection="salesDetailConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Product List Query</Name>
+        <Columns/>
+        <Parameters/>
+        <Query>
+SELECT DISTINCT 
+    productline as label,
+    productline as value
+FROM 
+    products
+ORDER BY 
+    productline
+        </Query>
+    </DataAccess>
+
+    <!-- Query for Territory dropdown -->
+    <DataAccess id="territoryListQuery" connection="salesDetailConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Territory List Query</Name>
+        <Columns/>
+        <Parameters/>
+        <Query>
+SELECT DISTINCT 
+    territory as label,
+    territory as value
+FROM 
+    customers
+ORDER BY 
+    territory
+        </Query>
+    </DataAccess>
+</CDADescriptor>

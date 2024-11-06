@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <DataSources>
+        <Connection id="productDistConn" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
+        </Connection>
+    </DataSources>
+
+    <DataAccess id="productDistQuery" connection="productDistConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Product Distribution Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    p.productline,
+    SUM(od.quantityordered * od.priceeach) as total_sales,
+    SUM(od.quantityordered) as total_quantity,
+    COUNT(DISTINCT o.ordernumber) as order_count,
+    ROUND(SUM(od.quantityordered * od.priceeach) / 
+        (SELECT SUM(od2.quantityordered * od2.priceeach) 
+         FROM orderdetails od2 
+         JOIN orders o2 ON od2.ordernumber = o2.ordernumber
+         WHERE o2.orderdate BETWEEN ${dateStart} AND ${dateEnd}) * 100, 2) as sales_percentage
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+GROUP BY 
+    p.productline
+ORDER BY 
+    total_sales DESC
+        </Query>
+    </DataAccess>
+</CDADescriptor>
