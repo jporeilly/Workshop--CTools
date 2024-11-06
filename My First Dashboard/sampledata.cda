@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+   <DataSources>
+      <Connection id="Total_SalesQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+      <Connection id="Line_SalesQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+      <Connection id="Years_SalesQuery" type="mondrian.jndi">
+         <Catalog>mondrian:/SteelWheels</Catalog>
+         <Jndi>SampleData</Jndi>
+      </Connection>
+   </DataSources>
+   <DataAccess access="public" connection="Total_SalesQuery" id="Total_SalesQuery" type="mdx">
+      <Name>Total_SalesQuery</Name>
+      <BandedMode>compact</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters/>
+      <Query><![CDATA[select NON EMPTY({Descendants([Markets].[All Markets] ,[Markets].[Territory])}) on ROWS, 
+ NON EMPTY({[Measures].[Sales]}) on Columns 
+ from [SteelWheelsSales]]]></Query>
+   </DataAccess>
+   <DataAccess access="public" connection="Line_SalesQuery" id="Line_SalesQuery" type="mdx">
+      <Name>Line_SalesQuery</Name>
+      <BandedMode>compact</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters/>
+      <Query><![CDATA[select NON EMPTY({Descendants([Product].[All Products] ,[Product].[Line])}) on ROWS, 
+ NON EMPTY({[Measures].[Sales]}) on Columns 
+ from [SteelWheelsSales]]]></Query>
+   </DataAccess>
+   <DataAccess access="public" connection="Years_SalesQuery" id="Years_SalesQuery" type="mdx">
+      <Name>Years_SalesQuery</Name>
+      <BandedMode>compact</BandedMode>
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters/>
+      <Query><![CDATA[select NON EMPTY({Descendants([Time].[All Years] ,[Time].[Years])}) on ROWS, 
+ NON EMPTY({[Measures].[Sales]}) on Columns 
+ from [SteelWheelsSales]]]></Query>
+   </DataAccess>
+</CDADescriptor>
