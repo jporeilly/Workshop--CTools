@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+    <!-- Single Connection for all queries -->
+    <DataSources>
+        <Connection id="salesConn" type="sql.jdbc">
+            <Driver>org.mariadb.jdbc.Driver</Driver>
+            <Url>jdbc:mariadb://localhost:3306/sampledata</Url>
+            <User>pentaho_admin</User>
+            <Pass>password</Pass>
+        </Connection>
+    </DataSources>
+
+    <!-- Sales Trend Query -->
+    <DataAccess id="salesTrendQuery" connection="salesConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Trend Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d') as order_date,
+    SUM(od.quantityordered * od.priceeach) as total_sales,
+    COUNT(DISTINCT o.ordernumber) as order_count
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+GROUP BY 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d')
+ORDER BY 
+    order_date ASC
+        </Query>
+    </DataAccess>
+
+    <!-- Product Distribution Query -->
+    <DataAccess id="productDistQuery" connection="salesConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Product Distribution Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    p.productline,
+    SUM(od.quantityordered * od.priceeach) as total_sales,
+    SUM(od.quantityordered) as total_quantity,
+    COUNT(DISTINCT o.ordernumber) as order_count,
+    ROUND(SUM(od.quantityordered * od.priceeach) / 
+        (SELECT SUM(od2.quantityordered * od2.priceeach) 
+         FROM orderdetails od2 
+         JOIN orders o2 ON od2.ordernumber = o2.ordernumber
+         WHERE o2.orderdate BETWEEN ${dateStart} AND ${dateEnd}) * 100, 2) as sales_percentage
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+GROUP BY 
+    p.productline
+ORDER BY 
+    total_sales DESC
+        </Query>
+    </DataAccess>
+
+    <!-- Sales Detail Query -->
+    <DataAccess id="salesDetailQuery" connection="salesConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Sales Detail Query</Name>
+        <Columns/>
+        <Parameters>
+            <Parameter name="dateStart" type="String" default="2003-01-01"/>
+            <Parameter name="dateEnd" type="String" default="2005-12-31"/>
+            <Parameter name="product" type="StringArray" default="[]"/>
+            <Parameter name="territory" type="StringArray" default="[]"/>
+        </Parameters>
+        <Query>
+SELECT 
+    DATE_FORMAT(o.orderdate, '%Y-%m-%d') as order_date,
+    o.ordernumber,
+    c.customername,
+    c.territory,
+    p.productline,
+    p.productname,
+    od.quantityordered as quantity,
+    od.priceeach as unit_price,
+    (od.quantityordered * od.priceeach) as total_amount,
+    o.status,
+    CASE 
+        WHEN o.status = 'Shipped' THEN 'Completed'
+        WHEN o.status = 'Cancelled' THEN 'Cancelled'
+        ELSE 'In Progress'
+    END as order_status
+FROM 
+    orders o
+    JOIN orderdetails od ON o.ordernumber = od.ordernumber
+    JOIN products p ON od.productcode = p.productcode
+    JOIN customers c ON o.customernumber = c.customernumber
+WHERE 
+    o.orderdate BETWEEN ${dateStart} AND ${dateEnd}
+    AND (${product} IS NULL OR p.productline IN (${product}))
+    AND (${territory} IS NULL OR c.territory IN (${territory}))
+ORDER BY 
+    o.orderdate DESC,
+    o.ordernumber,
+    p.productline
+        </Query>
+    </DataAccess>
+
+    <!-- Product List Query for Dropdown -->
+    <DataAccess id="productListQuery" connection="salesConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Product List Query</Name>
+        <Columns/>
+        <Parameters/>
+        <Query>
+SELECT DISTINCT 
+    productline as label,
+    productline as value
+FROM 
+    products
+ORDER BY 
+    productline
+        </Query>
+    </DataAccess>
+
+    <!-- Territory List Query for Dropdown -->
+    <DataAccess id="territoryListQuery" connection="salesConn" type="sql" access="public" cache="true" cacheDuration="3600">
+        <Name>Territory List Query</Name>
+        <Columns/>
+        <Parameters/>
+        <Query>
+SELECT DISTINCT 
+    territory as label,
+    territory as value
+FROM 
+    customers
+ORDER BY 
+    territory
+        </Query>
+    </DataAccess>
+</CDADescriptor>
