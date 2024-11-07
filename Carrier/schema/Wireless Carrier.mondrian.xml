@@ -1,0 +1,291 @@
+<Schema name="Wireless Carrier">
+  <Dimension type="TimeDimension" visible="true" highCardinality="false" name="Time">
+    <Hierarchy name="Standard Time" visible="true" hasAll="true" allMemberName="All" primaryKey="date_pk">
+      <Table name="dim_time">
+      </Table>
+      <Level name="Year" visible="true" column="year_key" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="AnalyzerDateFormat">
+            <![CDATA[[yyyy]]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="Quarter" visible="true" table="dim_time" column="quarter_key" nameColumn="quarter_desc" type="String" uniqueMembers="true" levelType="TimeQuarters" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="AnalyzerDateFormat">
+            <![CDATA[[yyyy].['QTR'q]]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="Month" visible="true" column="month_key" nameColumn="month_desc" type="String" uniqueMembers="true" levelType="TimeMonths" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="AnalyzerDateFormat">
+            <![CDATA[[yyyy].['QTR'q].[MMM]]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="Date" visible="true" column="date_pk" nameColumn="date_desc" type="String" uniqueMembers="true" levelType="TimeDays" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Products">
+    <Hierarchy name="Products" visible="true" hasAll="true" allMemberName="All" primaryKey="productcode">
+      <Table name="dim_products">
+      </Table>
+      <Level name="Product Vendor" visible="true" column="productvendor" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Product Line" visible="true" column="productline" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Product" visible="true" column="productname" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        <Property name="Code" column="productcode" type="String">
+        </Property>
+        <Property name="Vendor" column="productvendor" type="String">
+        </Property>
+        <Property name="Description" column="productname" type="String">
+        </Property>
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Customers">
+    <Hierarchy name="Customers" visible="true" hasAll="true" allMemberName="All" primaryKey="customernumber">
+      <Table name="dim_customers">
+      </Table>
+      <Level name="Country" visible="true" column="country" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="State Province" visible="true" column="state" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[state]]>
+          </Annotation>
+          <Annotation name="Geo.RequiredParents">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="City" visible="true" column="city" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[city]]>
+          </Annotation>
+          <Annotation name="Geo.RequiredParents">
+            <![CDATA[country, state]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="Customer" visible="true" column="customername" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        <Property name="Customer Number" column="customernumber" type="Numeric">
+        </Property>
+        <Property name="Contact First Name" column="contactfirstname" type="String">
+        </Property>
+        <Property name="Contact Last Name" column="contactlastname" type="String">
+        </Property>
+        <Property name="Phone" column="phone" type="String">
+        </Property>
+        <Property name="Address" column="addressline1" type="String">
+        </Property>
+        <Property name="Credit Limit" column="creditlimit" type="Numeric">
+        </Property>
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Order Status">
+    <Hierarchy name="Order Status" visible="true" hasAll="true" allMemberName="All">
+      <Level name="Order Status" visible="true" column="status" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Day of Week">
+    <Hierarchy name="Day of Week" visible="true" hasAll="true" allMemberName="All" primaryKey="date_pk">
+      <Table name="dim_time">
+      </Table>
+      <Level name="Day of Week" visible="true" column="day_of_week" nameColumn="day_of_week_desc" type="Integer" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Call Source">
+    <Hierarchy name="Source Geography" visible="true" hasAll="true" allMemberName="All" primaryKey="geography_pk">
+      <Table name="dim_geography">
+      </Table>
+      <Level name="Source Region" visible="true" column="region_desc" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Source Country" visible="true" column="country_desc" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Calling Plan">
+    <Hierarchy name="Calling Plan" visible="true" hasAll="true" allMemberName="All" primaryKey="plan_id">
+      <Table name="dim_plan">
+      </Table>
+      <Level name="Plan Type" visible="true" column="plan_type" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Plan Category" visible="true" column="plan_category" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Plan" visible="true" column="plan_desc" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        <Property name="Minutes" column="minutes" type="String">
+        </Property>
+        <Property name="Messages" column="messages" type="String">
+        </Property>
+        <Property name="Data" column="data" type="String">
+        </Property>
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Call Destination">
+    <Hierarchy name="Destination Geography" visible="true" hasAll="true" allMemberName="All" primaryKey="geography_pk">
+      <Table name="dim_geography">
+      </Table>
+      <Level name="Destination Region" visible="true" column="region_desc" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Destination Country" visible="true" column="country_desc" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Retail Stores">
+    <Hierarchy name="Retail Stores" visible="true" hasAll="true" allMemberName="All" primaryKey="storecode">
+      <Table name="dim_stores">
+      </Table>
+      <Level name="Territory" visible="true" column="territory" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Country" visible="true" column="country" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="State" visible="true" column="state" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[state]]>
+          </Annotation>
+          <Annotation name="Geo.RequiredParents">
+            <![CDATA[country]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="City" visible="true" column="city" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+        <Annotations>
+          <Annotation name="Data.Role">
+            <![CDATA[Geography]]>
+          </Annotation>
+          <Annotation name="Geo.Role">
+            <![CDATA[City]]>
+          </Annotation>
+          <Annotation name="Geo.RequiredParents">
+            <![CDATA[country, state]]>
+          </Annotation>
+        </Annotations>
+      </Level>
+      <Level name="Postal Code" visible="true" column="postalcode" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+      <Level name="Store" visible="true" column="storecode" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Sales Reps">
+    <Hierarchy name="Sales Reps" visible="true" hasAll="true" allMemberName="All" primaryKey="employeenumber">
+      <Table name="dim_employees">
+      </Table>
+      <Level name="Sales Rep" visible="true" column="employeenumber" nameColumn="firstname" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      </Level>
+    </Hierarchy>
+  </Dimension>
+  <Cube name="Retail Sales" visible="true" cache="true" enabled="true">
+    <Table name="fact_order">
+    </Table>
+    <DimensionUsage source="Time" name="Time" visible="true" foreignKey="time_id" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Products" name="Products" visible="true" foreignKey="productcode" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Customers" name="Customers" visible="true" foreignKey="customernumber" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Order Status" name="Order Status" visible="true" foreignKey="status" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Day of Week" name="Day of Week" visible="true" foreignKey="time_id" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Retail Stores" name="Retail Stores" visible="true" foreignKey="storecode" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Sales Reps" name="Sales Reps" visible="true" foreignKey="salesrepemployeenumber" highCardinality="false">
+    </DimensionUsage>
+    <Measure name="Sales" column="totalprice" datatype="Numeric" aggregator="sum" visible="true">
+    </Measure>
+    <Measure name="Quantity" column="quantityordered" datatype="Numeric" aggregator="sum" visible="true">
+    </Measure>
+    <Measure name="Gross Profit" column="totalcost" aggregator="sum" visible="true">
+    </Measure>
+  </Cube>
+  <Cube name="Call Corridor" visible="true" cache="true" enabled="true">
+    <Table name="fact_telco">
+    </Table>
+    <DimensionUsage source="Time" name="Time" visible="true" foreignKey="date_key" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Calling Plan" name="Calling Plan" visible="true" foreignKey="plan_id" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Call Source" name="Call Source" visible="true" foreignKey="source_geography_key" highCardinality="false">
+    </DimensionUsage>
+    <DimensionUsage source="Call Destination" name="Call Destination" visible="true" foreignKey="dest_geography_key" highCardinality="false">
+    </DimensionUsage>
+    <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Platform">
+      <Hierarchy name="Platform" visible="true" hasAll="true">
+        <Level name="Platform" visible="true" column="platform" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Marketing Flag">
+      <Hierarchy name="Marketing Flag" visible="true" hasAll="true">
+        <Level name="Marketing Flag" visible="true" column="flag_allow_marketing" type="Integer" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <DimensionUsage source="Day of Week" name="Day of Week" visible="true" foreignKey="date_key" highCardinality="false">
+    </DimensionUsage>
+    <Dimension type="StandardDimension" visible="true" highCardinality="false" name="Business Unit">
+      <Hierarchy name="Business Unit" visible="true" hasAll="true">
+        <Level name="Business Unit" visible="true" column="business_unit" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Measure name="Users" column="user_count" datatype="Numeric" aggregator="sum" visible="true">
+    </Measure>
+    <Measure name="Duration in Minutes" column="duration_min" datatype="Numeric" aggregator="sum" visible="true">
+    </Measure>
+    <Measure name="Calls" column="call_count" datatype="Numeric" aggregator="sum" visible="true">
+    </Measure>
+  </Cube>
+</Schema>
